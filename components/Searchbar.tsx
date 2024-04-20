@@ -1,8 +1,21 @@
 "use client";
+import { scrapeAndStoreProduct } from "@/lib/actions";
+import { scrapeAmazonProduct } from "@/lib/scraper";
+import { hostname } from "os";
 import React, { FormEvent, useState } from "react";
 
 const isValidAmazonProductURL = (url: string) => {
   try {
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname;
+
+    if (
+      hostname.includes("amazon.com") ||
+      hostname.includes("amazon.") ||
+      hostname.endsWith("amazon")
+    ) {
+      return true;
+    }
   } catch (error) {
     return false;
   }
@@ -15,6 +28,20 @@ const Searchbar = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const isValid = isValidAmazonProductURL(searchPrompt);
+
+    if (!isValid) return alert("Please provide a valid amazon link");
+
+    try {
+      setIsLoading(true);
+      // scrape the product
+      const product = await scrapeAndStoreProduct(searchPrompt);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
