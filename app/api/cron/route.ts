@@ -1,30 +1,32 @@
-import Product from "@/lib/models/productmodel";
-import { connectToDB } from "@/lib/mongoose";
-import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
-import { scrapeAmazonProduct } from "@/lib/scraper";
-import {
-  getAveragePrice,
-  getEmailNotifyType,
-  getHighestPrice,
-  getLowestPrice,
-} from "@/lib/utils";
 import { NextResponse } from "next/server";
 
-export const maxDuration = 10; // This function can run for a maximum of 300 seconds
+import {
+  getLowestPrice,
+  getHighestPrice,
+  getAveragePrice,
+  getEmailNotifyType,
+} from "@/lib/utils";
+import { connectToDB } from "@/lib/mongoose";
+import Product from "@/lib/models/productmodel";
+import { scrapeAmazonProduct } from "@/lib/scraper";
+import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
+
+export const maxDuration = 300; // This function can run for a maximum of 300 seconds
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: Request) {
   try {
     connectToDB();
+
     const products = await Product.find({});
 
     if (!products) throw new Error("No product fetched");
 
-    //1. scrape latest product details & update the pricehistory of the item
+    // ======================== 1 SCRAPE LATEST PRODUCT DETAILS & UPDATE DB
     const updatedProducts = await Promise.all(
       products.map(async (currentProduct) => {
-        //scrape the product
+        // Scrape product
         const scrapedProduct = await scrapeAmazonProduct(currentProduct.url);
 
         if (!scrapedProduct) return;
@@ -35,6 +37,7 @@ export async function GET(request: Request) {
             price: scrapedProduct.currentPrice,
           },
         ];
+
         const product = {
           ...scrapedProduct,
           priceHistory: updatedPriceHistory,
@@ -43,7 +46,7 @@ export async function GET(request: Request) {
           averagePrice: getAveragePrice(updatedPriceHistory),
         };
 
-        //updating the product in DB
+        // Update Products in DB
         const updatedProduct = await Product.findOneAndUpdate(
           {
             url: product.url,
@@ -51,30 +54,30 @@ export async function GET(request: Request) {
           product
         );
 
-        //2. Check each product's status & send email accordingly
-
-        const emailnotifyType = getEmailNotifyType(
+        // ======================== 2 CHECK EACH PRODUCT'S STATUS & SEND EMAIL ACCORDINGLY
+        const emailNotifType = getEmailNotifyType(
           scrapedProduct,
           currentProduct
         );
 
-        if (emailnotifyType && updatedProduct.users.length > 0) {
+        if (emailNotifType && updatedProduct.users.length > 0) {
           const productInfo = {
             title: updatedProduct.title,
             url: updatedProduct.url,
           };
-
+          // Construct emailContent
           const emailContent = await generateEmailBody(
             productInfo,
-            emailnotifyType
+            emailNotifType
           );
-
+          // Get array of user emails
           const userEmails = updatedProduct.users.map(
             (user: any) => user.email
           );
-
+          // Send email notification
           await sendEmail(emailContent, userEmails);
         }
+
         return updatedProduct;
       })
     );
