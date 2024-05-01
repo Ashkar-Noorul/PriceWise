@@ -16,21 +16,6 @@ Price Wise is a comprehensive tool designed to help users track and monitor pric
 
 ## Getting Started
 
-To start using Price Wise, simply clone this repository and follow the installation instructions in the `README.md` file. Make sure you have Node.js and npm installed on your machine.
-
-## Contributing
-
-We welcome contributions from the community to make Price Wise even better. If you have any ideas for new features, bug fixes, or improvements, feel free to open an issue or submit a pull request.
-
-## License
-
-Price Wise is licensed under the MIT License. See the `LICENSE` file for more details.
-
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
 First, run the development server:
 
 ```bash
