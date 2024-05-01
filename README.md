@@ -1,3 +1,32 @@
+# Price Wise
+
+Price Wise is a comprehensive tool designed to help users track and monitor prices of products on Amazon. Whether you're a savvy shopper looking for the best deals or a seller trying to stay competitive, Price Wise has you covered with its robust set of features.
+
+## Key Features
+
+1. **Search by Amazon URL**: Simply paste any Amazon product URL into the search bar on the homepage, and Price Wise will add it to the trending section.
+
+2. **Price Tracking & History**: Track the current price, highest recorded price, lowest recorded price, and average price for each product. Keep tabs on pricing trends to make informed purchasing decisions.
+
+3. **Automated Email Alerts**: Set up email notifications using Nodemailer to receive alerts when a product's price reaches the threshold discount percentage or lowest price. Never miss out on a great deal again.
+
+4. **Scheduled Price Updates**: Leverage cron jobs to ensure regular price updates through an exposed API (powered by cron-job.org). Stay up-to-date with the latest price changes without manual intervention.
+
+5. **Efficient Data Scraping**: Utilize Bright Data as a proxy service and Cheerio for efficient HTML parsing, maintaining ethical scraping practices. Get accurate and timely data while respecting website terms of service.
+
+## Getting Started
+
+To start using Price Wise, simply clone this repository and follow the installation instructions in the `README.md` file. Make sure you have Node.js and npm installed on your machine.
+
+## Contributing
+
+We welcome contributions from the community to make Price Wise even better. If you have any ideas for new features, bug fixes, or improvements, feel free to open an issue or submit a pull request.
+
+## License
+
+Price Wise is licensed under the MIT License. See the `LICENSE` file for more details.
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
